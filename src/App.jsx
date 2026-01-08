@@ -183,6 +183,7 @@ const RUNWAY_PROJECTION = [
 ];
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const YEARS = ['2025', '2026', '2027']; // Add 2026 and future years here
 
 // --- Components ---
 
@@ -664,7 +665,7 @@ export default function DexPayFinancialDashboard() {
 
   // Form Handlers
   const [newTx, setNewTx] = useState({
-    month: 'Dec', day: '05', category: 'Operations', type: '', desc: '', amount: '', status: 'Pending', sourceId: '', destId: ''
+    month: 'Jan', day: '08', year: '2026', category: 'Operations', type: '', desc: '', amount: '', status: 'Pending', sourceId: '', destId: ''
   });
 
   const isExpense = ['OpEx', 'Salary', 'Operations', 'Marketing', 'Legal', 'Tech', 'COGS'].includes(newTx.category);
@@ -804,7 +805,7 @@ export default function DexPayFinancialDashboard() {
 
   // Shape for the DB
   const txForDb = {
-    date: `${newTx.month} ${newTx.day}`,
+    date: `${newTx.month} ${newTx.day} ${newTx.year}`,
     category: newTx.category,
     type: newTx.type || null,
     description: newTx.desc,
@@ -1305,7 +1306,7 @@ export default function DexPayFinancialDashboard() {
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shrink-0">
           <div className="flex items-center"><button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden mr-4 text-slate-500"><Menu className="w-6 h-6" /></button><h1 className="text-xl font-bold text-slate-900 hidden sm:block">{activeTab === 'dashboard' ? 'Financial Overview' : activeTab === 'treasury' ? 'Treasury Management' : 'Audit Reports'}</h1></div>
           <div className="flex items-center space-x-4">
-             {activeTab === 'dashboard' && <div className="relative group"><div className="flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer"><Calendar className="w-4 h-4 mr-2 text-slate-500" /><select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer pr-6 font-medium text-slate-700 outline-none">{MONTHS.map(m => <option key={m} value={m}>{m} 2025</option>)}</select><ChevronDown className="w-4 h-4 absolute right-3 pointer-events-none text-slate-400" /></div></div>}
+             {activeTab === 'dashboard' && <div className="relative group"><div className="flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer"><Calendar className="w-4 h-4 mr-2 text-slate-500" /><select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer pr-6 font-medium text-slate-700 outline-none">{MONTHS.map(m => <option key={m} value={m}>{m} 2026</option>)}</select><ChevronDown className="w-4 h-4 absolute right-3 pointer-events-none text-slate-400" /></div></div>}
              <button onClick={() => setIsModalOpen(true)} className="hidden sm:flex items-center text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"><Plus className="w-4 h-4 mr-2" /> New Entry</button>
              <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm">JS</div>
           </div>
@@ -1367,8 +1368,32 @@ export default function DexPayFinancialDashboard() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
                   <div className="flex gap-2">
-                    <select value={newTx.month} onChange={(e) => setNewTx({...newTx, month: e.target.value})} className="w-2/3 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">{MONTHS.map(m => <option key={m} value={m}>{m}</option>)}</select>
-                    <input type="text" placeholder="DD" value={newTx.day} onChange={(e) => setNewTx({...newTx, day: e.target.value})} className="w-1/3 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 text-center" />
+                    {/* Month Selector */}
+                    <select 
+                      value={newTx.month} 
+                      onChange={(e) => setNewTx({...newTx, month: e.target.value})} 
+                      className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm"
+                    >
+                      {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                
+                    {/* Day Input */}
+                    <input 
+                      type="text" 
+                      placeholder="DD" 
+                      value={newTx.day} 
+                      onChange={(e) => setNewTx({...newTx, day: e.target.value})} 
+                      className="w-1/4 px-2 py-2 border border-slate-300 rounded-lg text-sm text-center" 
+                    />
+                
+                    {/* Year Selector - NEW */}
+                    <select 
+                      value={newTx.year} 
+                      onChange={(e) => setNewTx({...newTx, year: e.target.value})} 
+                      className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm"
+                    >
+                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
                   </div>
                 </div>
                 <div><label className="block text-sm font-medium text-slate-700 mb-1">Amount ($)</label><input type="number" placeholder="0.00" value={newTx.amount} onChange={(e) => setNewTx({...newTx, amount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required /></div>
