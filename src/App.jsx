@@ -1,17 +1,17 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
   Cell,
   LineChart,
   Line,
@@ -19,13 +19,13 @@ import {
   Area,
   ReferenceLine
 } from 'recharts';
-import { 
-  ArrowUpRight, 
-  ArrowDownLeft, 
-  Wallet, 
-  AlertTriangle, 
-  TrendingUp, 
-  Briefcase, 
+import {
+  ArrowUpRight,
+  ArrowDownLeft,
+  Wallet,
+  AlertTriangle,
+  TrendingUp,
+  Briefcase,
   Activity,
   DollarSign,
   PieChart as PieIcon,
@@ -60,64 +60,64 @@ import {
 
 // --- CONFIGURATION ---
 
-const LOGO_URL = "https://dexpay.io/src/assets/svg/logo.svg"; 
-const APP_PIN = "2025"; 
-const INACTIVITY_LIMIT_MS = 3 * 60 * 1000; 
+const LOGO_URL = "https://dexpay.io/src/assets/svg/logo.svg";
+const APP_PIN = "2025";
+const INACTIVITY_LIMIT_MS = 3 * 60 * 1000;
 
 // --- INITIAL DATA ---
 
 const TREASURY_BREAKDOWN_INIT = [
-  { 
-    id: 'sol', 
-    chain: 'Solana', 
-    icon: '◎', 
+  {
+    id: 'sol',
+    chain: 'Solana',
+    icon: '◎',
     color: 'bg-purple-100 text-purple-600',
     assets: [
       { token: 'USDT', amount: 3200.00 },
       { token: 'USDC', amount: 4500.00 }
     ]
   },
-  { 
-    id: 'bsc', 
-    chain: 'BSC (BNB Chain)', 
-    icon: '🟡', 
+  {
+    id: 'bsc',
+    chain: 'BSC (BNB Chain)',
+    icon: '🟡',
     color: 'bg-yellow-100 text-yellow-600',
     assets: [
       { token: 'USDT', amount: 2800.00 },
       { token: 'USDC', amount: 1500.00 }
     ]
   },
-  { 
-    id: 'hedera', 
-    chain: 'Hedera', 
-    icon: 'ℏ', 
+  {
+    id: 'hedera',
+    chain: 'Hedera',
+    icon: 'ℏ',
     color: 'bg-slate-200 text-slate-700',
     assets: [
       { token: 'USDC', amount: 3100.00 }
     ]
   },
-  { 
-    id: 'base', 
-    chain: 'Base', 
-    icon: '🔵', 
+  {
+    id: 'base',
+    chain: 'Base',
+    icon: '🔵',
     color: 'bg-blue-100 text-blue-600',
     assets: [
       { token: 'USDC', amount: 2100.00 }
     ]
   },
-  { 
-    id: 'ape', 
-    chain: 'ApeChain', 
-    icon: '🦍', 
+  {
+    id: 'ape',
+    chain: 'ApeChain',
+    icon: '🦍',
     color: 'bg-blue-600 text-white',
     assets: [
       { token: 'ApeUSD', amount: 1800.00 }
     ]
   },
-  { 
-    id: 'arb', 
-    chain: 'Arbitrum', 
-    icon: '🔷', 
+  {
+    id: 'arb',
+    chain: 'Arbitrum',
+    icon: '🔷',
     color: 'bg-indigo-100 text-indigo-600',
     assets: [
       { token: 'USDC', amount: 1095.00 }
@@ -166,9 +166,9 @@ const FIAT_INIT = [
 ];
 
 const ASSET_ALLOCATION = [
-  { name: 'Stablecoins', value: 20095, color: '#10B981' }, 
-  { name: 'Volatile', value: 8947, color: '#8B5CF6' },    
-  { name: 'Fiat', value: 7260, color: '#64748B' },           
+  { name: 'Stablecoins', value: 20095, color: '#10B981' },
+  { name: 'Volatile', value: 8947, color: '#8B5CF6' },
+  { name: 'Fiat', value: 7260, color: '#64748B' },
 ];
 
 const RUNWAY_PROJECTION = [
@@ -179,7 +179,7 @@ const RUNWAY_PROJECTION = [
   { month: 'Feb', balance: 19222 },
   { month: 'Mar', balance: 10682 },
   { month: 'Apr', balance: 2142 },
-  { month: 'May', balance: -6398 }, 
+  { month: 'May', balance: -6398 },
 ];
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -270,20 +270,20 @@ const AuthScreen = ({ onUnlock }) => {
         </div>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">DexPay Secure View</h2>
         <p className="text-slate-500 mb-4">Enter CFO PIN to access financial data</p>
-        
+
         {errorMsg && (
           <div className="mb-4 p-3 bg-rose-100 text-rose-700 text-sm rounded-lg border border-rose-200">
             {errorMsg}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          <input 
-            type="password" 
+          <input
+            type="password"
             value={pin}
             onChange={(e) => {
-               // Optional: prevent typing more than 4 digits
-               if (e.target.value.length <= 4) setPin(e.target.value);
+              // Optional: prevent typing more than 4 digits
+              if (e.target.value.length <= 4) setPin(e.target.value);
             }}
             placeholder="Enter PIN"
             className="w-full text-center text-2xl tracking-widest py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 text-slate-900"
@@ -291,15 +291,15 @@ const AuthScreen = ({ onUnlock }) => {
             autoFocus
             disabled={loading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-slate-900 text-white py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors flex items-center justify-center disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Unlock Dashboard"}
           </button>
         </form>
-         <p className="mt-6 text-xs text-slate-400">
+        <p className="mt-6 text-xs text-slate-400">
           Auto-locks after 3 minutes of inactivity
         </p>
       </div>
@@ -327,7 +327,7 @@ export default function DexPayFinancialDashboard() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  
+
   // Sidebar State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -342,7 +342,7 @@ export default function DexPayFinancialDashboard() {
   const totalAds = useMemo(() => treasuryWallets.reduce((acc, w) => acc + w.assets.reduce((sum, a) => sum + a.amount, 0), 0), [treasuryWallets]);
   const totalCold = useMemo(() => coldStorage.reduce((acc, w) => acc + w.assets.reduce((sum, a) => sum + a.amount, 0), 0), [coldStorage]);
   const totalFiat = useMemo(() => fiatTreasury.reduce((acc, w) => acc + w.assets.reduce((sum, a) => sum + a.amount, 0), 0), [fiatTreasury]);
-  
+
   const globalBalance = totalAds + totalCold + totalFiat;
 
   // --- Audit Logger ---
@@ -428,7 +428,7 @@ export default function DexPayFinancialDashboard() {
     const handleActivity = () => resetTimer();
     if (isAuthenticated) {
       events.forEach(event => window.addEventListener(event, handleActivity));
-      resetTimer(); 
+      resetTimer();
     }
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -440,7 +440,7 @@ export default function DexPayFinancialDashboard() {
   useEffect(() => {
     const fetchBalances = async () => {
       const { data, error } = await supabase.from('asset_balances').select('*');
-      
+
       if (!error && data) {
         // 1. Update Ads Wallets
         setTreasuryWallets(prev => prev.map(chain => ({
@@ -471,11 +471,11 @@ export default function DexPayFinancialDashboard() {
             if (found) {
               const newAmount = Number(found.amount);
               const newRate = found.rate ? Number(found.rate) : asset.rate;
-              return { 
-                ...asset, 
-                amount: newAmount, 
+              return {
+                ...asset,
+                amount: newAmount,
                 rate: newRate,
-                ngnValue: newAmount * newRate 
+                ngnValue: newAmount * newRate
               };
             }
             return asset;
@@ -517,7 +517,7 @@ export default function DexPayFinancialDashboard() {
     return transactions.filter(t => {
       // 1. Matches Month?
       const matchesMonth = t.date.includes(selectedMonth);
-      
+
       // 2. Does the transaction date actually contain a year string?
       const hasYearInDate = t.date.includes('2025') || t.date.includes('2026') || t.date.includes('2027');
 
@@ -538,7 +538,7 @@ export default function DexPayFinancialDashboard() {
 
   const monthlyMetrics = useMemo(() => {
     let revenue = 0;
-    let burn = 0; 
+    let burn = 0;
     const expenseCategories = ['OpEx', 'Salary', 'Operations', 'Marketing', 'Legal', 'Tech', 'COGS'];
 
     monthlyTransactions.forEach(tx => {
@@ -552,6 +552,167 @@ export default function DexPayFinancialDashboard() {
     });
     return { revenue, burn, runway: globalBalance / (burn || 1) };
   }, [monthlyTransactions, globalBalance]);
+
+  // --- Runway Projection Logic (Time-Travel Capable) ---
+  const runwayProjectionData = useMemo(() => {
+    // 1. Helper: Parse Date
+    const parseDateValues = (dateStr) => {
+      const parts = dateStr.replace(',', '').split(' ');
+      if (parts.length === 3) return new Date(`${parts[0]} ${parts[1]} ${parts[2]}`);
+      return new Date(`${parts[0]} ${parts[1]} 2025`); // Legacy fallback
+    };
+
+    // 2. Identify Anchor Date
+    const monthIndex = MONTHS.indexOf(selectedMonth);
+    const anchorDate = new Date(Number(selectedYear), monthIndex, 1);
+
+    // 3. Calculate Balance at Anchor Date (Reverse Engineering)
+    // Start with current globalBalance (which represents "Now")
+    // If Anchor is in PAST: Add back expenses, subtract revenue that happened AFTER Anchor
+    // If Anchor is in FUTURE: Subtract projected burn? No, stick to real data for "Now".
+    // ACTUALLY: The safest way is to "Replay" from current Global Balance backwards or forwards?
+    // EASIER: Calculate "Net Change" between Anchor and Now using ACTUAL transactions.
+
+    const now = new Date();
+    // Normalize "Now" to start of current month for simpler month-bucketing? 
+    // Or just use exact timestamps? Let's use exact dates for transactions.
+
+    let balanceAtAnchor = globalBalance;
+
+    // Filter relevant transactions (Approved only)
+    const activeTxs = transactions.filter(t => t.status === 'Approved');
+
+    // Adjust Balance:
+    // We need to "undo" transactions that happened AFTER the anchor date up to NOW.
+    // Or "apply" transactions if Anchor is in the future? (Future Txs don't exist yet, usually).
+    // Let's assume Anchor is usually 'Present' or 'Past' relative to latest data.
+    // However, if user selects "Dec 2026", that's future.
+
+    // Let's rely on the principle: BalanceAtAnchor = CurrentBalance - (Sum of Txs between Anchor and Now)
+    // Txs should be signed: Revenue (+), Expense (-).
+    // If Anchor < Now (Past): We revert the Txs that happened spread [Anchor...Now].
+    //    BalanceAtAnchor = Current - (NetChangeSinceAnchor)
+    //    Example: Current 100. Spend 20 last week. Anchor = last month.
+    //    NetChange = -20.
+    //    BalanceAtAnchor = 100 - (-20) = 120. Correct.
+
+    activeTxs.forEach(tx => {
+      const txDate = parseDateValues(tx.date);
+
+      // We only care about the delta between Anchor and Now (roughly).
+      // Actually, simpler:
+      // BalanceAtAnchor = CurrentBalance + (Expenses after Anchor) - (Revenue after Anchor)
+      // (Assuming "CurrentBalance" includes everything up to "Now")
+
+      if (txDate > anchorDate) {
+        // This transaction happened AFTER the anchor.
+        // To get back to the state AT anchor, we must REVERSE it.
+        const isExpense = ['OpEx', 'Salary', 'Operations', 'Marketing', 'Legal', 'Tech', 'COGS'].includes(tx.category);
+        const isRevenue = tx.category === 'Revenue';
+
+        if (isExpense) {
+          balanceAtAnchor += Math.abs(tx.amount); // Add back money spent
+        } else if (isRevenue) {
+          balanceAtAnchor -= Math.abs(tx.amount); // Remove money earned
+        }
+      }
+    });
+
+    // 4. Group Historical Data for Contextual Burn (3 Months Prior to Anchor)
+    const expensesByMonth = {};
+    const expenseCategories = ['OpEx', 'Salary', 'Operations', 'Marketing', 'Legal', 'Tech', 'COGS'];
+
+    activeTxs.forEach(tx => {
+      if (!expenseCategories.includes(tx.category)) return;
+      const dateObj = parseDateValues(tx.date);
+      const key = `${dateObj.getFullYear()}-${dateObj.getMonth()}`;
+      if (!expensesByMonth[key]) expensesByMonth[key] = 0;
+      expensesByMonth[key] += Math.abs(tx.amount);
+    });
+
+    // Identify the 3 months PRECEDING the Anchor
+    // e.g. Anchor = Jan 2026. Preceding = Dec 2025, Nov 2025, Oct 2025.
+    const contextMonths = [];
+    for (let i = 1; i <= 3; i++) {
+      const d = new Date(anchorDate.getFullYear(), anchorDate.getMonth() - i, 1);
+      contextMonths.push(`${d.getFullYear()}-${d.getMonth()}`); // "2025-11"
+    }
+
+    const totalContextBurn = contextMonths.reduce((sum, key) => sum + (expensesByMonth[key] || 0), 0);
+    // Be careful with average: if a month has 0 data, do we count it? 
+    // Requirement said: "average monthly burn rate based on the last 3 active months"
+    // BUT new requirement says: "from the 3 months immediately preceding the Anchor Date".
+    // Let's assume strict 3 months preceding for "Contextual".
+    const averageBurn = totalContextBurn / 3;
+
+    // 5. Generate Hybrid Data
+    const result = [];
+
+    // Part A: Lead-In (The 3 months leading up to Anchor)
+    // We derived BalanceAtAnchor.
+    // To get Balance at start of Month X (prior), we reverse further?
+    // Actually, simpler to show "Actual Balance" at those times?
+    // We effectively have BalanceAtAnchor.
+    // Balance(Anchor - 1month) = BalanceAtAnchor - (NetChange in Month(Anchor-1))
+    // Wait, NetChange = Revenue - Expense.
+    // So Balance(Prev) = Balance(Next) - Revenue + Expense.
+
+    // We want to calculate the balances for the *start* of these months? 
+    // Or just plot the points.
+
+    // Sort transactions by date for replay/rewind? 
+    // Simpler: Just sum totals per month.
+    const netChangeByMonth = {}; // Key: "YYYY-M", Value: Revenue - Expense
+    activeTxs.forEach(tx => {
+      const d = parseDateValues(tx.date);
+      const k = `${d.getFullYear()}-${d.getMonth()}`;
+      if (!netChangeByMonth[k]) netChangeByMonth[k] = 0;
+
+      if (tx.category === 'Revenue') netChangeByMonth[k] += Number(tx.amount);
+      else if (expenseCategories.includes(tx.category)) netChangeByMonth[k] -= Math.abs(tx.amount);
+    });
+
+    // Let's calculate balances for the Lead-In months.
+
+    // Let's calculate balances for the Lead-In months.
+    // We work backwards from BalanceAtAnchor.
+    const leadInData = [];
+    let walkingBalance = balanceAtAnchor;
+
+    // Iterate backwards from Anchor-1 to Anchor-3
+    for (let i = 1; i <= 3; i++) {
+      const d = new Date(anchorDate.getFullYear(), anchorDate.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const change = netChangeByMonth[key] || 0;
+
+      // Start(Month) = End(Month) - change = Start(NextMonth) - change
+      walkingBalance = walkingBalance - change;
+
+      leadInData.unshift({
+        month: d.toLocaleString('default', { month: 'short' }),
+        balance: walkingBalance,
+        type: 'actual',
+        fullDate: d
+      });
+    }
+
+    // Part B: Projection (Anchor + 6 Months)
+    const projectionData = [];
+    let projBalance = balanceAtAnchor;
+
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + i, 1);
+      projectionData.push({
+        month: d.toLocaleString('default', { month: 'short' }),
+        balance: Math.round(projBalance),
+        type: 'projected',
+        fullDate: d
+      });
+      projBalance -= averageBurn;
+    }
+
+    return [...leadInData, ...projectionData];
+  }, [transactions, globalBalance, selectedMonth, selectedYear]);
 
   // --- Account Selector Logic ---
   const allAccounts = useMemo(() => {
@@ -585,8 +746,8 @@ export default function DexPayFinancialDashboard() {
     // Fiat
     fiatTreasury.forEach((bank, wIdx) => {
       bank.assets.forEach((asset, aIdx) => {
-        const balanceDisplay = asset.ngnValue 
-          ? `₦${asset.ngnValue.toLocaleString()}` 
+        const balanceDisplay = asset.ngnValue
+          ? `₦${asset.ngnValue.toLocaleString()}`
           : `$${asset.amount.toLocaleString()}`;
         accounts.push({
           id: `fiat-${bank.id}-${asset.token}`,
@@ -626,18 +787,18 @@ export default function DexPayFinancialDashboard() {
       const chain = updated[walletIndex];
       const newAssets = [...chain.assets];
       const asset = newAssets[assetIndex];
-      
+
       // Calculate new amount
       newAssets[assetIndex] = { ...asset, amount: asset.amount + amountChange };
       updated[walletIndex] = { ...chain, assets: newAssets };
-      
+
       // Update UI
       setTreasuryWallets(updated);
-      
+
       // Prepare DB Data
       newDbAmount = newAssets[assetIndex].amount;
       dbId = `ads-${chain.id}-${asset.token}`;
-    } 
+    }
     // 2. HANDLE COLD STORAGE
     else if (type === 'cold') {
       const updated = [...coldStorage];
@@ -648,14 +809,14 @@ export default function DexPayFinancialDashboard() {
       // Calculate new amount
       newAssets[assetIndex] = { ...asset, amount: asset.amount + amountChange };
       updated[walletIndex] = { ...wallet, assets: newAssets };
-      
+
       // Update UI
       setColdStorage(updated);
 
       // Prepare DB Data
       newDbAmount = newAssets[assetIndex].amount;
       dbId = `cold-${wallet.id}-${asset.token}`;
-    } 
+    }
     // 3. HANDLE FIAT
     else if (type === 'fiat') {
       const updated = [...fiatTreasury];
@@ -672,7 +833,7 @@ export default function DexPayFinancialDashboard() {
 
       newAssets[assetIndex] = { ...asset, amount: newAmount, ngnValue: newNgnValue };
       updated[walletIndex] = { ...bank, assets: newAssets };
-      
+
       // Update UI
       setFiatTreasury(updated);
 
@@ -706,98 +867,98 @@ export default function DexPayFinancialDashboard() {
     const isTxTransfer = tx.category === 'Liquidity';
 
     const findAccId = (labelStr) => {
-        if(!labelStr) return null;
-        const acc = allAccounts.find(a => a.label.startsWith(labelStr));
-        return acc ? acc.id : null;
+      if (!labelStr) return null;
+      const acc = allAccounts.find(a => a.label.startsWith(labelStr));
+      return acc ? acc.id : null;
     }
 
     if (isTxExpense && tx.source) {
-       const accId = findAccId(tx.source);
-       if(accId) applyBalanceChange(accId, -amount * multiplier);
+      const accId = findAccId(tx.source);
+      if (accId) applyBalanceChange(accId, -amount * multiplier);
     }
     if (isTxRevenue && tx.dest) {
-        const accId = findAccId(tx.dest);
-        if(accId) applyBalanceChange(accId, amount * multiplier);
+      const accId = findAccId(tx.dest);
+      if (accId) applyBalanceChange(accId, amount * multiplier);
     }
     if (isTxTransfer && tx.source && tx.dest) {
-        const srcId = findAccId(tx.source);
-        const dstId = findAccId(tx.dest);
-        if(srcId) applyBalanceChange(srcId, -amount * multiplier);
-        if(dstId) applyBalanceChange(dstId, amount * multiplier);
+      const srcId = findAccId(tx.source);
+      const dstId = findAccId(tx.dest);
+      if (srcId) applyBalanceChange(srcId, -amount * multiplier);
+      if (dstId) applyBalanceChange(dstId, amount * multiplier);
     }
   };
 
   const handleAddTransaction = async (e) => {
-  e.preventDefault();
-  const amountVal = parseFloat(newTx.amount);
-  if (!amountVal) return;
+    e.preventDefault();
+    const amountVal = parseFloat(newTx.amount);
+    if (!amountVal) return;
 
-  const isExpense = newTx.category === 'Operations' || newTx.category === 'Legal';
-  const isRevenue = newTx.category === 'Revenue';
+    const isExpense = newTx.category === 'Operations' || newTx.category === 'Legal';
+    const isRevenue = newTx.category === 'Revenue';
 
-  const sourceAcc = allAccounts.find(a => a.id === newTx.sourceId);
-  const destAcc = allAccounts.find(a => a.id === newTx.destId);
+    const sourceAcc = allAccounts.find(a => a.id === newTx.sourceId);
+    const destAcc = allAccounts.find(a => a.id === newTx.destId);
 
-  const sourceLabel = sourceAcc ? sourceAcc.label.split(' (Bal:')[0] : '';
-  const destLabel = destAcc ? destAcc.label.split(' (Bal:')[0] : '';
+    const sourceLabel = sourceAcc ? sourceAcc.label.split(' (Bal:')[0] : '';
+    const destLabel = destAcc ? destAcc.label.split(' (Bal:')[0] : '';
 
-  // Shape for the DB - Ensure Year is included!
-  const txForDb = {
-    date: `${newTx.month} ${newTx.day}, ${newTx.year}`,
-    category: newTx.category,
-    type: newTx.type || null,
-    description: newTx.desc,
-    status: 'Pending',
-    amount: isExpense ? -amountVal : (isRevenue ? amountVal : -amountVal),
-    source: sourceLabel || null,
-    dest: destLabel || null,
+    // Shape for the DB - Ensure Year is included!
+    const txForDb = {
+      date: `${newTx.month} ${newTx.day}, ${newTx.year}`,
+      category: newTx.category,
+      type: newTx.type || null,
+      description: newTx.desc,
+      status: 'Pending',
+      amount: isExpense ? -amountVal : (isRevenue ? amountVal : -amountVal),
+      source: sourceLabel || null,
+      dest: destLabel || null,
+    };
+
+    // 1) Save to Supabase
+    const { data, error } = await supabase
+      .from('transactions')
+      .insert(txForDb)
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      alert('Could not save transaction');
+      return;
+    }
+
+    // 2) Map DB row back to UI shape
+    const savedTx = {
+      id: data.id,
+      date: data.date,
+      category: data.category,
+      type: data.type,
+      desc: data.description,
+      status: data.status,
+      amount: Number(data.amount),
+      source: data.source,
+      dest: data.dest,
+    };
+
+    // 3) Update React state
+    setTransactions(prev => [savedTx, ...prev]);
+    addToLog('Entry Added', `${newTx.category}: ${newTx.desc} (${amountVal})`);
+    setIsModalOpen(false);
+
+    // Reset form
+    setNewTx({
+      month: 'Dec',
+      day: '05',
+      year: '2025',
+      category: 'Operations',
+      type: '',
+      desc: '',
+      amount: '',
+      status: 'Pending',
+      sourceId: '',
+      destId: '',
+    });
   };
-
-  // 1) Save to Supabase
-  const { data, error } = await supabase
-    .from('transactions')
-    .insert(txForDb)
-    .select()
-    .single();
-
-  if (error) {
-    console.error(error);
-    alert('Could not save transaction');
-    return;
-  }
-
-  // 2) Map DB row back to UI shape
-  const savedTx = {
-    id: data.id,
-    date: data.date,
-    category: data.category,
-    type: data.type,
-    desc: data.description,
-    status: data.status,
-    amount: Number(data.amount),
-    source: data.source,
-    dest: data.dest,
-  };
-
-  // 3) Update React state
-  setTransactions(prev => [savedTx, ...prev]);
-  addToLog('Entry Added', `${newTx.category}: ${newTx.desc} (${amountVal})`);
-  setIsModalOpen(false);
-
-  // Reset form
-  setNewTx({
-    month: 'Dec',
-    day: '05',
-    year: '2025',
-    category: 'Operations',
-    type: '',
-    desc: '',
-    amount: '',
-    status: 'Pending',
-    sourceId: '',
-    destId: '',
-  });
-};
 
 
   const handleStatusChange = async (newStatus) => {
@@ -815,14 +976,14 @@ export default function DexPayFinancialDashboard() {
       alert('Failed to update status in database');
       return;
     }
-    
+
     // 2. Update local logic if DB update succeeded
     if (newStatus === 'Approved' && oldStatus !== 'Approved') {
-        executeFundMovement(selectedTransaction, false); 
-        addToLog('Status Updated', `Approved: ${selectedTransaction.desc}`);
+      executeFundMovement(selectedTransaction, false);
+      addToLog('Status Updated', `Approved: ${selectedTransaction.desc}`);
     } else if (oldStatus === 'Approved' && newStatus !== 'Approved') {
-        executeFundMovement(selectedTransaction, true);
-        addToLog('Status Reverted', `Reverted: ${selectedTransaction.desc}`);
+      executeFundMovement(selectedTransaction, true);
+      addToLog('Status Reverted', `Reverted: ${selectedTransaction.desc}`);
     }
 
     const updatedTx = { ...selectedTransaction, status: newStatus };
@@ -844,12 +1005,12 @@ export default function DexPayFinancialDashboard() {
     if (error) {
       console.error('Error deleting from DB:', error);
       alert('Failed to delete transaction from database');
-      return; 
+      return;
     }
 
     // 3. If DB delete succeeded, update local state
-    if(txToDelete.status === 'Approved') {
-        executeFundMovement(txToDelete, true);
+    if (txToDelete.status === 'Approved') {
+      executeFundMovement(txToDelete, true);
     }
 
     setTransactions(transactions.filter(t => t.id !== id));
@@ -860,7 +1021,7 @@ export default function DexPayFinancialDashboard() {
   // --- Treasury Edit Logic ---
   const updateAds = async (chainIndex, assetIndex, value) => {
     const numValue = parseFloat(value) || 0;
-    
+
     // 1. Update Local State (Instant feedback)
     const updated = [...treasuryWallets];
     const chain = updated[chainIndex];
@@ -874,10 +1035,10 @@ export default function DexPayFinancialDashboard() {
     const dbId = `ads-${chain.id}-${asset.token}`;
     await supabase.from('asset_balances').upsert({ id: dbId, amount: numValue });
   };
-  
+
   const updateCold = async (chainIndex, assetIndex, value) => {
     const numValue = parseFloat(value) || 0;
-    
+
     // 1. Update Local State
     const updated = [...coldStorage];
     const wallet = updated[chainIndex];
@@ -891,16 +1052,16 @@ export default function DexPayFinancialDashboard() {
     const dbId = `cold-${wallet.id}-${asset.token}`;
     await supabase.from('asset_balances').upsert({ id: dbId, amount: numValue });
   };
-  
+
   const updateFiatManual = async (bankIndex, assetIndex, field, value) => {
     const numValue = parseFloat(value) || 0;
-    
+
     // 1. Update Local State
     const updated = [...fiatTreasury];
     const bank = updated[bankIndex];
     const newAssets = [...bank.assets];
     const currentAsset = newAssets[assetIndex];
-    
+
     let newAmount = currentAsset.amount;
     let newRate = currentAsset.rate;
     let newNgnValue = currentAsset.ngnValue;
@@ -912,17 +1073,17 @@ export default function DexPayFinancialDashboard() {
       newRate = numValue;
       newAmount = currentAsset.ngnValue / (newRate || 1);
     }
-    
+
     newAssets[assetIndex] = { ...currentAsset, amount: newAmount, ngnValue: newNgnValue, rate: newRate };
     updated[bankIndex] = { ...bank, assets: newAssets };
     setFiatTreasury(updated);
 
     // 2. Save to Supabase
     const dbId = `fiat-${bank.id}-${currentAsset.token}`;
-    await supabase.from('asset_balances').upsert({ 
-      id: dbId, 
-      amount: newAmount, 
-      rate: newRate 
+    await supabase.from('asset_balances').upsert({
+      id: dbId,
+      amount: newAmount,
+      rate: newRate
     });
   };
 
@@ -940,7 +1101,7 @@ export default function DexPayFinancialDashboard() {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'Approved': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
@@ -950,36 +1111,47 @@ export default function DexPayFinancialDashboard() {
     }
   };
 
+  const ledgerMetrics = useMemo(() => {
+    let inflow = 0;
+    let outflow = 0;
+    displayedTransactions.forEach(tx => {
+      if (tx.category === 'Liquidity') return; // Skip transfers
+      if (tx.amount > 0) inflow += tx.amount;
+      else outflow += Math.abs(tx.amount);
+    });
+    return { inflow, outflow };
+  }, [displayedTransactions]);
+
   // --- Render Views ---
   const renderDashboard = () => (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard 
-          title="Total Treasury" 
-          value={`$${globalBalance.toLocaleString('en-US', {maximumFractionDigits: 0})}`} 
+        <MetricCard
+          title="Total Treasury"
+          value={`$${globalBalance.toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
           subtext="Global Balance"
           icon={Wallet}
           colorClass="bg-slate-100 text-slate-700"
         />
-        <MetricCard 
-          title={`Burn Rate (${selectedMonth} ${selectedYear})`} 
-          value={`$${monthlyMetrics.burn.toLocaleString()}`} 
+        <MetricCard
+          title={`Burn Rate (${selectedMonth} ${selectedYear})`}
+          value={`$${monthlyMetrics.burn.toLocaleString()}`}
           subtext={monthlyMetrics.burn > 0 ? "Expenses recorded" : "No expenses yet"}
           icon={Activity}
           trend="down"
           colorClass="bg-blue-100 text-blue-600"
         />
-        <MetricCard 
-          title="Runway Remaining" 
-          value={`${monthlyMetrics.runway.toFixed(1)} Months`} 
+        <MetricCard
+          title="Runway Remaining"
+          value={`${monthlyMetrics.runway.toFixed(1)} Months`}
           subtext={monthlyMetrics.runway > 12 ? "All systems operational" : "Critical: Raise Capital"}
           icon={monthlyMetrics.runway > 12 ? CheckCircle2 : AlertTriangle}
           colorClass={monthlyMetrics.runway > 12 ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"}
           alert={monthlyMetrics.runway <= 12}
         />
-        <MetricCard 
-          title={`Revenue (${selectedMonth} ${selectedYear})`} 
-          value={`$${monthlyMetrics.revenue.toLocaleString()}`} 
+        <MetricCard
+          title={`Revenue (${selectedMonth} ${selectedYear})`}
+          value={`$${monthlyMetrics.revenue.toLocaleString()}`}
           subtext={monthlyMetrics.revenue > 0 ? "Income recorded" : "No revenue yet"}
           icon={DollarSign}
           trend="up"
@@ -992,18 +1164,18 @@ export default function DexPayFinancialDashboard() {
           <SectionHeader title="Runway Projection" subtitle="Projected cash balance based on current burn" />
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={RUNWAY_PROJECTION} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart data={runwayProjectionData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748B'}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748B'}} tickFormatter={(val) => `$${val/1000}k`} />
-                <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} formatter={(val) => [`$${val.toLocaleString()}`, 'Balance']} />
-                <ReferenceLine x={selectedMonth} stroke="#10B981" strokeDasharray="3 3" label={{ position: 'top', value: 'Selected', fill: '#10B981', fontSize: 10 }} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#64748B' }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748B' }} tickFormatter={(val) => `$${val / 1000}k`} />
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} formatter={(val) => [`$${val.toLocaleString()}`, 'Balance']} />
+                <ReferenceLine x={selectedMonth} stroke="#10B981" strokeDasharray="3 3" label={{ position: 'top', value: 'Anchor', fill: '#10B981', fontSize: 10 }} />
                 <Area type="monotone" dataKey="balance" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorBalance)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -1018,23 +1190,29 @@ export default function DexPayFinancialDashboard() {
                   {ASSET_ALLOCATION.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.color} />))}
                 </Pie>
                 <Tooltip />
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{fontSize: '11px'}} />
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ fontSize: '11px' }} />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-8">
               <div className="text-center">
-                <span className="text-2xl font-bold text-slate-800">${(globalBalance/1000).toFixed(0)}k</span>
+                <span className="text-2xl font-bold text-slate-800">${(globalBalance / 1000).toFixed(0)}k</span>
                 <p className="text-xs text-slate-400">Total Assets</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">General Ledger ({selectedMonth} {selectedYear})</h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <h3 className="text-lg font-bold text-slate-900">General Ledger ({selectedMonth} {selectedYear})</h3>
+              <div className="flex items-center gap-2">
+                {ledgerMetrics.inflow > 0 && <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full whitespace-nowrap">In: +${ledgerMetrics.inflow.toLocaleString()}</span>}
+                {ledgerMetrics.outflow > 0 && <span className="text-xs font-bold text-rose-700 bg-rose-100 px-2 py-1 rounded-full whitespace-nowrap">Out: -${ledgerMetrics.outflow.toLocaleString()}</span>}
+              </div>
+            </div>
             <p className="text-sm text-slate-500">Filtered view for selected period</p>
           </div>
           <div className="flex bg-slate-100 p-1 rounded-lg">
@@ -1067,16 +1245,21 @@ export default function DexPayFinancialDashboard() {
                       <div className="flex flex-col">
                         <span>{tx.desc}</span>
                         <span className="text-xs text-slate-400">
-                            {tx.source && `From: ${tx.source}`}
-                            {tx.source && tx.dest && <ArrowRight className="w-3 h-3 inline mx-1" />}
-                            {tx.dest && `To: ${tx.dest}`}
+                          {tx.source && `From: ${tx.source}`}
+                          {tx.source && tx.dest && <ArrowRight className="w-3 h-3 inline mx-1" />}
+                          {tx.dest && `To: ${tx.dest}`}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4"><span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(tx.status)}`}>{tx.status}</span></td>
-                    <td className={`px-6 py-4 text-right font-medium ${tx.amount > 0 ? 'text-emerald-600' : 'text-slate-900'}`}>{tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                    <td className={`px-6 py-4 text-right font-medium ${tx.category === 'Liquidity' ? 'text-slate-500' :
+                      tx.amount > 0 ? 'text-emerald-600' : 'text-slate-900'
+                      }`}>
+                      {tx.category === 'Liquidity' ? '↔ ' : (tx.amount > 0 ? '+' : '')}
+                      {Math.abs(tx.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    </td>
                     <td className="px-6 py-4 text-right">
-                      <button 
+                      <button
                         onClick={(e) => { e.stopPropagation(); handleDeleteTransaction(tx.id); }}
                         className="text-slate-300 hover:text-rose-600 transition-colors p-1"
                         title="Delete Entry"
@@ -1159,9 +1342,9 @@ export default function DexPayFinancialDashboard() {
       </div>
 
       <div>
-         <div className="flex justify-between items-end mb-6 pt-8 border-t border-slate-200">
+        <div className="flex justify-between items-end mb-6 pt-8 border-t border-slate-200">
           <h2 className="text-lg font-bold text-slate-900">Fiat (NGN) Treasury</h2>
-          <div className="text-right"><p className="text-sm text-slate-500">Total Fiat Value</p><p className="text-3xl font-bold text-slate-900">${totalFiat.toLocaleString('en-US', {maximumFractionDigits: 2})}</p></div>
+          <div className="text-right"><p className="text-sm text-slate-500">Total Fiat Value</p><p className="text-3xl font-bold text-slate-900">${totalFiat.toLocaleString('en-US', { maximumFractionDigits: 2 })}</p></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {fiatTreasury.map((bank, bankIndex) => (
@@ -1174,12 +1357,12 @@ export default function DexPayFinancialDashboard() {
                 {bank.assets.map((asset, assetIndex) => (
                   <div key={assetIndex} className="flex flex-col p-3 bg-slate-50 rounded-lg">
                     <div className="flex justify-between items-start w-full">
-                        <span className="font-medium text-slate-600 mt-1">{asset.token}</span>
-                        <div className="text-right">
-                            <div className="font-bold text-slate-900 text-lg flex items-center justify-end"><span className="mr-1">₦</span>{isEditingTreasury ? <input type="number" value={asset.ngnValue} onChange={(e) => updateFiatManual(bankIndex, assetIndex, 'ngnValue', e.target.value)} className="w-32 text-right px-2 py-1 text-lg border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" /> : asset.ngnValue.toLocaleString()}</div>
-                            <div className="text-sm font-medium text-emerald-600">${asset.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD</div>
-                            <div className="text-xs text-slate-400 mt-1 flex items-center justify-end"><span className="mr-1">@ ₦</span>{isEditingTreasury ? <input type="number" value={asset.rate} onChange={(e) => updateFiatManual(bankIndex, assetIndex, 'rate', e.target.value)} className="w-16 text-right px-1 py-0.5 text-xs border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" /> : asset.rate.toLocaleString()}<span className="ml-1">/$</span></div>
-                        </div>
+                      <span className="font-medium text-slate-600 mt-1">{asset.token}</span>
+                      <div className="text-right">
+                        <div className="font-bold text-slate-900 text-lg flex items-center justify-end"><span className="mr-1">₦</span>{isEditingTreasury ? <input type="number" value={asset.ngnValue} onChange={(e) => updateFiatManual(bankIndex, assetIndex, 'ngnValue', e.target.value)} className="w-32 text-right px-2 py-1 text-lg border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" /> : asset.ngnValue.toLocaleString()}</div>
+                        <div className="text-sm font-medium text-emerald-600">${asset.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD</div>
+                        <div className="text-xs text-slate-400 mt-1 flex items-center justify-end"><span className="mr-1">@ ₦</span>{isEditingTreasury ? <input type="number" value={asset.rate} onChange={(e) => updateFiatManual(bankIndex, assetIndex, 'rate', e.target.value)} className="w-16 text-right px-1 py-0.5 text-xs border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" /> : asset.rate.toLocaleString()}<span className="ml-1">/$</span></div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1225,11 +1408,11 @@ export default function DexPayFinancialDashboard() {
     <div className="h-screen bg-slate-50 font-sans text-slate-900 flex overflow-hidden">
       <aside className={`fixed inset-y-0 left-0 z-30 bg-slate-900 text-slate-300 transition-all duration-300 ease-in-out transform ${isMobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'} ${isSidebarCollapsed ? 'lg:w-20' : 'lg:w-64'} lg:static lg:inset-auto`}>
         <div className={`h-16 flex items-center bg-slate-950 ${isSidebarCollapsed ? 'justify-center px-0' : 'justify-between px-6'}`}>
-           <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center w-full' : ''}`}>
-               {LOGO_URL ? <img src={LOGO_URL} alt="DexPay Logo" className={`h-8 w-auto object-contain ${isSidebarCollapsed ? '' : 'mr-2'}`} /> : <div className="bg-blue-600 p-1.5 rounded-lg"><TrendingUp className="w-5 h-5 text-white" /></div>}
-               {!isSidebarCollapsed && <span className="text-lg font-bold text-white tracking-tight">DexPay Finance</span>}
-           </div>
-           {!isMobileMenuOpen && <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className={`hidden lg:flex text-slate-500 hover:text-white transition-colors ${isSidebarCollapsed ? 'hidden' : ''}`} title="Collapse Sidebar"><PanelLeftClose className="w-5 h-5" /></button>}
+          <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center w-full' : ''}`}>
+            {LOGO_URL ? <img src={LOGO_URL} alt="DexPay Logo" className={`h-8 w-auto object-contain ${isSidebarCollapsed ? '' : 'mr-2'}`} /> : <div className="bg-blue-600 p-1.5 rounded-lg"><TrendingUp className="w-5 h-5 text-white" /></div>}
+            {!isSidebarCollapsed && <span className="text-lg font-bold text-white tracking-tight">DexPay Finance</span>}
+          </div>
+          {!isMobileMenuOpen && <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className={`hidden lg:flex text-slate-500 hover:text-white transition-colors ${isSidebarCollapsed ? 'hidden' : ''}`} title="Collapse Sidebar"><PanelLeftClose className="w-5 h-5" /></button>}
         </div>
         {isSidebarCollapsed && <div className="hidden lg:flex justify-center py-2 border-b border-slate-800"><button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="text-slate-500 hover:text-white transition-colors" title="Expand Sidebar"><PanelLeftOpen className="w-5 h-5" /></button></div>}
         <div className="p-4 space-y-2">
@@ -1245,24 +1428,24 @@ export default function DexPayFinancialDashboard() {
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shrink-0">
           <div className="flex items-center"><button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden mr-4 text-slate-500"><Menu className="w-6 h-6" /></button><h1 className="text-xl font-bold text-slate-900 hidden sm:block">{activeTab === 'dashboard' ? 'Financial Overview' : activeTab === 'treasury' ? 'Treasury Management' : 'Audit Reports'}</h1></div>
           <div className="flex items-center space-x-4">
-             {activeTab === 'dashboard' && (
-                <div className="flex items-center gap-2">
-                    <div className="relative group flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer">
-                        <Calendar className="w-4 h-4 mr-2 text-slate-500" />
-                        <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer font-medium text-slate-700 outline-none">
-                            {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
-                        </select>
-                    </div>
-                     <div className="relative group flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer">
-                        <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer pr-4 font-medium text-slate-700 outline-none">
-                            {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                        </select>
-                        <ChevronDown className="w-4 h-4 absolute right-2 pointer-events-none text-slate-400" />
-                    </div>
+            {activeTab === 'dashboard' && (
+              <div className="flex items-center gap-2">
+                <div className="relative group flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer">
+                  <Calendar className="w-4 h-4 mr-2 text-slate-500" />
+                  <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer font-medium text-slate-700 outline-none">
+                    {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
                 </div>
-             )}
-             <button onClick={() => setIsModalOpen(true)} className="hidden sm:flex items-center text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"><Plus className="w-4 h-4 mr-2" /> New Entry</button>
-             <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm">JS</div>
+                <div className="relative group flex items-center text-sm text-slate-700 bg-slate-50 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-500 transition-colors cursor-pointer">
+                  <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="appearance-none bg-transparent border-none focus:ring-0 cursor-pointer pr-4 font-medium text-slate-700 outline-none">
+                    {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="w-4 h-4 absolute right-2 pointer-events-none text-slate-400" />
+                </div>
+              </div>
+            )}
+            <button onClick={() => setIsModalOpen(true)} className="hidden sm:flex items-center text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"><Plus className="w-4 h-4 mr-2" /> New Entry</button>
+            <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-sm">JS</div>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
@@ -1272,44 +1455,44 @@ export default function DexPayFinancialDashboard() {
 
       {selectedTransaction && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h3 className="text-lg font-bold text-slate-900">Transaction Details</h3>
-                    <button onClick={() => setSelectedTransaction(null)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-                </div>
-                <div className="p-6 space-y-6">
-                    <div className="flex justify-between items-start">
-                        <div><p className="text-sm text-slate-500 mb-1">Description</p><p className="font-medium text-slate-900 text-lg">{selectedTransaction.desc}</p><span className={`inline-flex mt-2 items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBadgeStyle(selectedTransaction.category)}`}>{selectedTransaction.category}</span></div>
-                        <div className="text-right"><p className="text-sm text-slate-500 mb-1">Amount</p><p className={`text-xl font-bold ${selectedTransaction.amount > 0 ? 'text-emerald-600' : 'text-slate-900'}`}>{selectedTransaction.amount > 0 ? '+' : ''}{selectedTransaction.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p></div>
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-lg space-y-3 text-sm">
-                        <div className="flex justify-between"><span className="text-slate-500">Date</span><span className="font-medium text-slate-900">{selectedTransaction.date}</span></div>
-                        {selectedTransaction.source && <div className="flex justify-between"><span className="text-slate-500">Source</span><span className="font-medium text-slate-900">{selectedTransaction.source}</span></div>}
-                        {selectedTransaction.dest && <div className="flex justify-between"><span className="text-slate-500">Destination</span><span className="font-medium text-slate-900">{selectedTransaction.dest}</span></div>}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Update Status</label>
-                        <div className="grid grid-cols-3 gap-2">
-                            {['Pending', 'Pending Approval', 'Approved'].map((status) => (
-                                <button key={status} onClick={() => handleStatusChange(status)} className={`px-3 py-2 text-xs font-medium rounded-lg border transition-all ${selectedTransaction.status === status ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>{status}</button>
-                            ))}
-                        </div>
-                        <p className="text-xs text-slate-400 mt-2">* Balances are only updated when status is set to <strong>Approved</strong>.</p>
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
-                        <button 
-                            onClick={() => {
-                                handleDeleteTransaction(selectedTransaction.id);
-                                setSelectedTransaction(null);
-                            }}
-                            className="flex items-center text-rose-600 hover:text-rose-700 font-medium text-sm"
-                        >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete Transaction
-                        </button>
-                        <button onClick={() => setSelectedTransaction(null)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">Close</button>
-                    </div>
-                </div>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+              <h3 className="text-lg font-bold text-slate-900">Transaction Details</h3>
+              <button onClick={() => setSelectedTransaction(null)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
             </div>
+            <div className="p-6 space-y-6">
+              <div className="flex justify-between items-start">
+                <div><p className="text-sm text-slate-500 mb-1">Description</p><p className="font-medium text-slate-900 text-lg">{selectedTransaction.desc}</p><span className={`inline-flex mt-2 items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBadgeStyle(selectedTransaction.category)}`}>{selectedTransaction.category}</span></div>
+                <div className="text-right"><p className="text-sm text-slate-500 mb-1">Amount</p><p className={`text-xl font-bold ${selectedTransaction.amount > 0 ? 'text-emerald-600' : 'text-slate-900'}`}>{selectedTransaction.amount > 0 ? '+' : ''}{selectedTransaction.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p></div>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-lg space-y-3 text-sm">
+                <div className="flex justify-between"><span className="text-slate-500">Date</span><span className="font-medium text-slate-900">{selectedTransaction.date}</span></div>
+                {selectedTransaction.source && <div className="flex justify-between"><span className="text-slate-500">Source</span><span className="font-medium text-slate-900">{selectedTransaction.source}</span></div>}
+                {selectedTransaction.dest && <div className="flex justify-between"><span className="text-slate-500">Destination</span><span className="font-medium text-slate-900">{selectedTransaction.dest}</span></div>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Update Status</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Pending', 'Pending Approval', 'Approved'].map((status) => (
+                    <button key={status} onClick={() => handleStatusChange(status)} className={`px-3 py-2 text-xs font-medium rounded-lg border transition-all ${selectedTransaction.status === status ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>{status}</button>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-400 mt-2">* Balances are only updated when status is set to <strong>Approved</strong>.</p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
+                <button
+                  onClick={() => {
+                    handleDeleteTransaction(selectedTransaction.id);
+                    setSelectedTransaction(null);
+                  }}
+                  className="flex items-center text-rose-600 hover:text-rose-700 font-medium text-sm"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" /> Delete Transaction
+                </button>
+                <button onClick={() => setSelectedTransaction(null)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1322,25 +1505,25 @@ export default function DexPayFinancialDashboard() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
                   <div className="flex gap-2">
-                    <select value={newTx.month} onChange={(e) => setNewTx({...newTx, month: e.target.value})} className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">{MONTHS.map(m => <option key={m} value={m}>{m}</option>)}</select>
-                    <input type="text" placeholder="DD" value={newTx.day} onChange={(e) => setNewTx({...newTx, day: e.target.value})} className="w-1/4 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 text-center" />
-                     <select value={newTx.year} onChange={(e) => setNewTx({...newTx, year: e.target.value})} className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">{YEARS.map(y => <option key={y} value={y}>{y}</option>)}</select>
+                    <select value={newTx.month} onChange={(e) => setNewTx({ ...newTx, month: e.target.value })} className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">{MONTHS.map(m => <option key={m} value={m}>{m}</option>)}</select>
+                    <input type="text" placeholder="DD" value={newTx.day} onChange={(e) => setNewTx({ ...newTx, day: e.target.value })} className="w-1/4 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 text-center" />
+                    <select value={newTx.year} onChange={(e) => setNewTx({ ...newTx, year: e.target.value })} className="w-1/3 px-2 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">{YEARS.map(y => <option key={y} value={y}>{y}</option>)}</select>
                   </div>
                 </div>
-                <div><label className="block text-sm font-medium text-slate-700 mb-1">Amount ($)</label><input type="number" placeholder="0.00" value={newTx.amount} onChange={(e) => setNewTx({...newTx, amount: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required /></div>
+                <div><label className="block text-sm font-medium text-slate-700 mb-1">Amount ($)</label><input type="number" placeholder="0.00" value={newTx.amount} onChange={(e) => setNewTx({ ...newTx, amount: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
-                  <select value={newTx.category} onChange={(e) => setNewTx({...newTx, category: e.target.value, sourceId: '', destId: ''})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                  <select value={newTx.category} onChange={(e) => setNewTx({ ...newTx, category: e.target.value, sourceId: '', destId: '' })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                     <option value="Operations">Operational Costs</option><option value="Salary">Salary & Wages</option><option value="Marketing">Marketing & Ads</option><option value="Legal">Legal & Compliance</option><option value="Tech">Software & Servers</option><option value="Revenue">Revenue (Income)</option><option value="COGS">COGS (Direct Cost)</option><option value="Liquidity">Treasury Transfer</option>
                   </select>
                 </div>
-                <div><label className="block text-sm font-medium text-slate-700 mb-1">Type</label><input type="text" placeholder="e.g. Gas, Server" value={newTx.type} onChange={(e) => setNewTx({...newTx, type: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" /></div>
+                <div><label className="block text-sm font-medium text-slate-700 mb-1">Type</label><input type="text" placeholder="e.g. Gas, Server" value={newTx.type} onChange={(e) => setNewTx({ ...newTx, type: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" /></div>
               </div>
-              {(isExpense || isTransfer) && (<div><label className="block text-sm font-medium text-slate-700 mb-1">{isTransfer ? 'Transfer From' : 'Debited From'}</label><select value={newTx.sourceId} onChange={(e) => setNewTx({...newTx, sourceId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required><option value="">Select Source Account</option>{allAccounts.map(acc => (<option key={acc.id} value={acc.id}>{acc.label}</option>))}</select></div>)}
-              {(isRevenue || isTransfer) && (<div><label className="block text-sm font-medium text-slate-700 mb-1">{isTransfer ? 'Transfer To' : 'Credited To'}</label><select value={newTx.destId} onChange={(e) => setNewTx({...newTx, destId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required><option value="">Select Destination Account</option>{allAccounts.map(acc => (<option key={acc.id} value={acc.id}>{acc.label}</option>))}</select></div>)}
-              <div><label className="block text-sm font-medium text-slate-700 mb-1">Description</label><input type="text" placeholder="e.g. Monthly Server Cost" value={newTx.desc} onChange={(e) => setNewTx({...newTx, desc: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required /></div>
+              {(isExpense || isTransfer) && (<div><label className="block text-sm font-medium text-slate-700 mb-1">{isTransfer ? 'Transfer From' : 'Debited From'}</label><select value={newTx.sourceId} onChange={(e) => setNewTx({ ...newTx, sourceId: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required><option value="">Select Source Account</option>{allAccounts.map(acc => (<option key={acc.id} value={acc.id}>{acc.label}</option>))}</select></div>)}
+              {(isRevenue || isTransfer) && (<div><label className="block text-sm font-medium text-slate-700 mb-1">{isTransfer ? 'Transfer To' : 'Credited To'}</label><select value={newTx.destId} onChange={(e) => setNewTx({ ...newTx, destId: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required><option value="">Select Destination Account</option>{allAccounts.map(acc => (<option key={acc.id} value={acc.id}>{acc.label}</option>))}</select></div>)}
+              <div><label className="block text-sm font-medium text-slate-700 mb-1">Description</label><input type="text" placeholder="e.g. Monthly Server Cost" value={newTx.desc} onChange={(e) => setNewTx({ ...newTx, desc: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" required /></div>
               <div className="pt-4 flex justify-end space-x-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
                 <button type="submit" className="px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 flex items-center"><Save className="w-4 h-4 mr-2" /> Save Entry</button>
