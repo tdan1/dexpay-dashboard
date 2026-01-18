@@ -1,7 +1,7 @@
 name: Supabase Keep Alive
 on:
   schedule:
-    - cron: '0 10 * * *' # Runs daily at 10:00 AM
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,14 +10,18 @@ jobs:
     steps:
       - name: Insert System Audit Log
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/audit_logs" \
+          # 1. Store the date in a variable first to handle spaces correctly
+          CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S")
+
+          # 2. Run curl with the variable (using double quotes for the JSON body)
+          curl -g -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/audit_logs" \
           -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
           -H "Content-Type: application/json" \
           -H "Prefer: return=minimal" \
-          -d '{
-            "timestamp": "'$(date -u +%Y-%m-%d\ %H:%M:%S)'",
-            "action": "SYSTEM_KEEP_ALIVE",
-            "user_name": "GitHub Actions",
-            "details": "Automated ping to prevent Supabase project pausing"
-          }'
+          -d "{
+            \"timestamp\": \"$CURRENT_TIME\",
+            \"action\": \"SYSTEM_KEEP_ALIVE\",
+            \"user_name\": \"GitHub Actions\",
+            \"details\": \"Automated ping to prevent Supabase project pausing\"
+          }"
